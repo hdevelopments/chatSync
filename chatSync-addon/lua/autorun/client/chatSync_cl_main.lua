@@ -1,5 +1,3 @@
-local config = include("autorun/chatSync_config.lua")
-
 net.Receive("ROOKI.Discord.Message", function()
     local user = net.ReadString()
     local msg = net.ReadString()

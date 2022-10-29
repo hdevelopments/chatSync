@@ -6,7 +6,6 @@ import axios from "axios";
 const Config = require(Number(process.env.DEV || 0) === 1
   ? "./config_dev"
   : "./config").default as ConfigModel;
-console.log(Number(process.env.DEV) === 1);
 const wss = new WebSocketServer.Server({
   port: +(Config.ws_port || 6969),
 });
@@ -114,7 +113,6 @@ client.on(Events.MessageCreate, (msg) => {
   )
     return;
   msg.fetch().then((msg) => {
-    console.log(msg.content)
     if(Config.ignore_prefix.find((x) => {
       return msg.content.startsWith(x)})) return
     wss.clients.forEach((cl, cl1) => {

@@ -11,8 +11,9 @@ local function SendMessage(ply, txt)
     }))
 end
 
+local tries = 0
+
 local function RecieveMessage(user, msg)
-    print("Sending Discord Chat:")
     net.Start("ROOKI.Discord.Message")
     net.WriteString(user)
     net.WriteString(msg)
@@ -43,11 +44,16 @@ end
 
 function chatSync_WS:onConnected()
     print("Connect with the Server")
+    tries = 0
 end
 
 function chatSync_WS:onDisconnected()
-    print("Disconnected with the Server, retry in 10 seconds")
-    timer.Simple(10, function()
+    if tries == 0 then
+        print("Disconnected with the Server, retry in 30 seconds")
+    end
+
+    timer.Simple(30, function()
+        tries = tries + 1
         chatSync_WS:open()
     end)
 end
@@ -57,7 +63,7 @@ hook.Add("ShutDown", "ROOKI.chatSync.Shutdown", function()
 end)
 
 timer.Simple(0, function()
-    if(!chatSync_WS:isConnected()) then
+    if not chatSync_WS:isConnected() then
         chatSync_WS:open()
     end
 end)
