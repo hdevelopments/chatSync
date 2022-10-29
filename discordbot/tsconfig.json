@@ -1,30 +1,29 @@
 {
-    "compilerOptions": {
-        "target": "ESNext",
-        "module": "commonjs",
-        "rootDir": "./src/",
-        "outDir": "./build/",
-        "strict": true,
-        "moduleResolution": "node",
-        "importHelpers": true,
-        "experimentalDecorators": true,
-        "esModuleInterop": true,
-        "skipLibCheck": true,
-        "allowSyntheticDefaultImports": true,
-        "resolveJsonModule": true,
-        "forceConsistentCasingInFileNames": true,
-        "removeComments": true,
-        "typeRoots": [
-            "node_modules/@types"
-        ],
-        "sourceMap": false,
-        "baseUrl": "./"
-    },
-    "include": [
-        "./**/*.ts"
-    ],
-    "exclude": [
-        "node_modules",
-        "dist"
-    ]
-} 
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "CommonJS",
+    "rootDir": "./src/",
+    "outDir": "./build/",
+    "strict": true,
+    "moduleResolution": "node",
+    "importHelpers": true,
+    "experimentalDecorators": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "allowSyntheticDefaultImports": true,
+    "resolveJsonModule": true,
+    "forceConsistentCasingInFileNames": true,
+    "removeComments": true,
+    "typeRoots": ["node_modules/@types"],
+    "sourceMap": false,
+    "baseUrl": "./",
+  },
+  "include": [
+    "./**/*.ts",
+    "src/models.ts",
+    "src/index.ts",
+    "src/config.ts",
+    "src/config_dev.ts"
+  ],
+  "exclude": ["node_modules", "dist"]
+}
