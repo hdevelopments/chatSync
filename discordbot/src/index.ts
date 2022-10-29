@@ -110,11 +110,13 @@ client.on(Events.MessageCreate, (msg) => {
   if (
     msg.channelId !== Config.dc_channelId ||
     msg.author.bot ||
-    msg.webhookId ||
-    Config.ignore_prefix.find((x) => msg.content.startsWith(x))
+    msg.webhookId
   )
     return;
   msg.fetch().then((msg) => {
+    console.log(msg.content)
+    if(Config.ignore_prefix.find((x) => {
+      return msg.content.startsWith(x)})) return
     wss.clients.forEach((cl, cl1) => {
       cl.send(
         JSON.stringify({
