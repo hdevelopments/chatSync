@@ -19,8 +19,8 @@ Go into discordbot over SSH, run npm install and after thatnpm run start
 
 # Running it for development
 
-Install the Addon normally like before.
-Create a config_dev.ts in discordbot/src
-put there your development credentials in. ( just copy past config.ts )
-then run npm run dev.
+Install the Addon normally like before.<br/>
+Create a config_dev.ts in discordbot/src<br/>
+put there your development credentials in. ( just copy past config.ts )<br/>
+then run npm run dev.<br/>
 Then if you made any changes the config_dev.ts wouldnt be pushed.
