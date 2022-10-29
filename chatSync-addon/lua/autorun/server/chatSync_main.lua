@@ -1,11 +1,12 @@
 require("gwsockets")
 util.AddNetworkString("ROOKI.Discord.Message")
 local config = include("autorun/chatSync_config.lua")
-local WS = WS or GWSockets.createWebSocket(config.websocket_address, false)
+chatSync_WS = chatSync_WS or GWSockets.createWebSocket(config.websocket_address, false)
 
 local function SendMessage(ply, txt)
-    WS:write(util.TableToJSON({
+    chatSync_WS:write(util.TableToJSON({
         user = ply:Nick(),
+        userSteamId = ply:SteamID64(),
         message = txt
     }))
 end
@@ -31,30 +32,32 @@ hook.Add("PlayerSay", "ROOKI.chatSync.PlayerSay", function(ply, txt, tc)
     SendMessage(ply, txt)
 end)
 
-function WS:onMessage(msg)
+function chatSync_WS:onMessage(msg)
     msg = util.JSONToTable(msg)
     RecieveMessage(msg.user, msg.message)
 end
 
-function WS:onError(errMessage)
+function chatSync_WS:onError(errMessage)
     print("An Error occured " .. errMessage)
 end
 
-function WS:onConnected()
+function chatSync_WS:onConnected()
     print("Connect with the Server")
 end
 
-function WS:onDisconnected()
+function chatSync_WS:onDisconnected()
     print("Disconnected with the Server, retry in 10 seconds")
     timer.Simple(10, function()
-        WS:open()
+        chatSync_WS:open()
     end)
 end
 
 hook.Add("ShutDown", "ROOKI.chatSync.Shutdown", function()
-    WS:close()
+    chatSync_WS:close()
 end)
 
 timer.Simple(0, function()
-    WS:open()
+    if(!chatSync_WS:isConnected()) then
+        chatSync_WS:open()
+    end
 end)
