@@ -2,8 +2,8 @@ var Config = {
   gm_address: "localhost",
   ws_port: "6969",
   dc_token:
-    "MTAzNTU4MTIxOTM3MjU0ODIwNg.GKm0rH.npCpyoQmpiBqJzipa0xAnKbHBqGEUxHFHqRkP4",
-  dc_channelId: "933043150551928843",
+    "YOUR DISCORD TOKEN HERE",
+  dc_channelId: "CHANNELID",
   ignore_prefix: ["/", "!", "."],
 };
 export default Config;
