@@ -1,9 +1,12 @@
-import { StringMappedInteractionTypes } from "discord.js"
+import { MessagePayload, StringMappedInteractionTypes } from "discord.js"
 
-export interface ChatModel{
-    user: string,
-    userSteamId?: string,
-    message: string
+export interface NotificationModel{
+    chat?: {
+        user: string,
+        userSteamId?: string,
+        message: string
+    }
+    notification?: string | MessagePayload
 }
 
 

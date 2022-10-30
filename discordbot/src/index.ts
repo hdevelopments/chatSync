@@ -1,7 +1,13 @@
 import WebSocketServer from "ws";
-import { Client, Events, BaseGuildTextChannel, Webhook } from "discord.js";
+import {
+  Client,
+  Events,
+  BaseGuildTextChannel,
+  Webhook,
+  chatInputApplicationCommandMention,
+} from "discord.js";
 import { GatewayIntentBits } from "discord-api-types/v10";
-import { ChatModel, ConfigModel, SteamUserModel } from "./models";
+import { ConfigModel, NotificationModel, SteamUserModel } from "./models";
 import axios from "axios";
 const Config = require(Number(process.env.DEV || 0) === 1
   ? "./config_dev"
@@ -81,18 +87,22 @@ wss.on("connection", (ws, req) => {
     return;
   }
   ws.on("message", async (dta: string) => {
-    var data = JSON.parse(dta) as ChatModel;
+    var data = JSON.parse(dta) as NotificationModel;
     if (!channel) {
       console.log("Channel Id is Invalid!");
       return;
     }
     var webhook = await getWebhookOfChannel(channel);
-    var avatar = (await fetchSteamAvatar(data.userSteamId!))?.avatarfull;
-    webhook.send({
-      username: data.user,
-      avatarURL: avatar,
-      content: data.message,
-    });
+    if (data.chat) {
+      var avatar = (await fetchSteamAvatar(data.chat.userSteamId!))?.avatarfull;
+      webhook.send({
+        username: data.chat.user,
+        avatarURL: avatar,
+        content: data.chat.message,
+      });
+    } else if (data.notification) {
+      webhook.send(data.notification);
+    }
   });
   ws.on("close", () => {
     console.log("Connection to Client closed!");
@@ -119,9 +129,11 @@ client.on(Events.MessageCreate, (msg) => {
     wss.clients.forEach((cl, cl1) => {
       cl.send(
         JSON.stringify({
-          user: msg.author.username,
-          message: msg.content,
-        } as ChatModel)
+          chat: {
+            user: msg.author.username,
+            message: msg.content,
+          }
+        } as NotificationModel)
       );
     });
   });
