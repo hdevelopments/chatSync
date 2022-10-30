@@ -7,6 +7,11 @@ var Config:ConfigModel  = {
     "YOUR DISCORD TOKEN HERE", // Your Discord Token
   dc_channelId: "Channel Id here", // The channel Id that the messages should be send and listened to
   ignore_prefix: ["/", "!", "."], // What prefixes should be ignored.
-  apiKey: "YOUR STEAM API KEY HERE" // For the Avatars from the Steam Users
+  apiKey: "YOUR STEAM API KEY HERE", // For the Avatars from the Steam Users
+  translations: {
+    "shutdown": "The Server is shutting down!",
+    "starting": "The Server has started!",
+    "crashed": "The Server has crashed!",
+  }
 };
 export default Config;

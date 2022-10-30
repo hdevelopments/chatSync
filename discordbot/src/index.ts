@@ -4,7 +4,6 @@ import {
   Events,
   BaseGuildTextChannel,
   Webhook,
-  chatInputApplicationCommandMention,
 } from "discord.js";
 import { GatewayIntentBits } from "discord-api-types/v10";
 import {
@@ -14,6 +13,7 @@ import {
   SteamUserModel,
 } from "./models";
 import axios from "axios";
+import { config } from "process";
 const Config = require(Number(process.env.DEV || 0) === 1
   ? "./config_dev"
   : "./config").default as ConfigModel;
@@ -112,7 +112,15 @@ wss.on("connection", (ws, req) => {
         content: data.chat.message,
       });
     } else if (data.notification) {
-      webhook.send(data.notification);
+      if(typeof data.notification === "string"){
+        if(Config.translations[data.notification]){
+          webhook.send(Config.translations[data.notification]);
+        }else{
+          webhook.send(data.notification);
+        }
+      }else{
+        webhook.send(data.notification);
+      }
     }
   });
   ws.on("close", async (code, reason) => {
@@ -126,7 +134,7 @@ wss.on("connection", (ws, req) => {
       var webhook = await getWebhookOfChannel(channel);
       webhook.send({
         username: "Server",
-        content: "Server has crashed!",
+        content: Config.translations["crashed"],
       });
     }
   });

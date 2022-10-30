@@ -24,6 +24,8 @@ export interface ConfigModel {
   dc_channelId: string;
   ignore_prefix: string[];
   apiKey: string;
+
+  translations: {[key:string]: string}
 }
 
 export interface SteamUserModel {
