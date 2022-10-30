@@ -97,8 +97,9 @@ wss.on("connection", (ws, req) => {
   ws.on("close", () => {
     console.log("Connection to Client closed!");
   });
-  ws.onerror = function () {
+  ws.onerror = (err) => {
     console.log("Some Error occurred");
+    console.log(err.message);
   };
 });
 console.log(
@@ -106,15 +107,15 @@ console.log(
 );
 
 client.on(Events.MessageCreate, (msg) => {
-  if (
-    msg.channelId !== Config.dc_channelId ||
-    msg.author.bot ||
-    msg.webhookId
-  )
+  if (msg.channelId !== Config.dc_channelId || msg.author.bot || msg.webhookId)
     return;
   msg.fetch().then((msg) => {
-    if(Config.ignore_prefix.find((x) => {
-      return msg.content.startsWith(x)})) return
+    if (
+      Config.ignore_prefix.find((x) => {
+        return msg.content.startsWith(x);
+      })
+    )
+      return;
     wss.clients.forEach((cl, cl1) => {
       cl.send(
         JSON.stringify({
