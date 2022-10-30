@@ -7,7 +7,12 @@ import {
   chatInputApplicationCommandMention,
 } from "discord.js";
 import { GatewayIntentBits } from "discord-api-types/v10";
-import { ConfigModel, NotificationModel, SteamUserModel } from "./models";
+import {
+  ConfigModel,
+  NotificationModel,
+  StatusEnum,
+  SteamUserModel,
+} from "./models";
 import axios from "axios";
 const Config = require(Number(process.env.DEV || 0) === 1
   ? "./config_dev"
@@ -18,7 +23,7 @@ const wss = new WebSocketServer.Server({
 
 let webhook: Webhook | undefined;
 let channel: BaseGuildTextChannel | undefined;
-
+let status: { [key: string]: NotificationModel } = {};
 const client = new Client({
   intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages],
 });
@@ -88,6 +93,12 @@ wss.on("connection", (ws, req) => {
   }
   ws.on("message", async (dta: string) => {
     var data = JSON.parse(dta) as NotificationModel;
+
+    status[req.socket.remoteAddress!] = {
+      server: data.server,
+      status: data.status,
+    };
+
     if (!channel) {
       console.log("Channel Id is Invalid!");
       return;
@@ -104,8 +115,20 @@ wss.on("connection", (ws, req) => {
       webhook.send(data.notification);
     }
   });
-  ws.on("close", () => {
+  ws.on("close", async (code, reason) => {
     console.log("Connection to Client closed!");
+    if (status[req.socket.remoteAddress!].status !== StatusEnum.Shutdown) {
+      console.log("Server crashed!");
+      if (!channel) {
+        console.log("Channel Id is Invalid!");
+        return;
+      }
+      var webhook = await getWebhookOfChannel(channel);
+      webhook.send({
+        username: "Server",
+        content: "Server has crashed!",
+      });
+    }
   });
   ws.onerror = (err) => {
     console.log("Some Error occurred");
@@ -132,7 +155,7 @@ client.on(Events.MessageCreate, (msg) => {
           chat: {
             user: msg.author.username,
             message: msg.content,
-          }
+          },
         } as NotificationModel)
       );
     });

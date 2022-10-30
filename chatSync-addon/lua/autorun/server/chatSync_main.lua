@@ -5,6 +5,8 @@ chatSync_WS = chatSync_WS or GWSockets.createWebSocket(config.websocket_address,
 
 local function SendMessage(ply, txt)
     chatSync_WS:write(util.TableToJSON({
+        server = config.server_name,
+        status = 1,
         chat = {
             user = ply:Nick(),
             userSteamId = ply:SteamID64(),
@@ -63,6 +65,8 @@ end
 
 hook.Add("ShutDown", "ROOKI.chatSync.Shutdown", function()
     chatSync_WS:write(util.TableToJSON({
+        server = config.server_name,
+        status = 0,
         notification = {
             content = "Server is shutting down!"
         }
@@ -75,6 +79,7 @@ timer.Simple(0, function()
         chatSync_WS:open()
     end
     chatSync_WS:write(util.TableToJSON({
+        status = 1,
         notification = {
             content = "Server has started!"
         }
