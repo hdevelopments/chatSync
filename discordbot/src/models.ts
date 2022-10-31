@@ -7,7 +7,6 @@ export enum StatusEnum {
 }
 
 export interface NotificationModel {
-  server: string;
   status: number;
   chat?: {
     user: string;
@@ -24,7 +23,6 @@ export interface ConfigModel {
   dc_channelId: string;
   ignore_prefix: string[];
   apiKey: string;
-
   translations: {[key:string]: string}
 }
 

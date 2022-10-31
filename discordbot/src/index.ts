@@ -95,7 +95,6 @@ wss.on("connection", (ws, req) => {
     var data = JSON.parse(dta) as NotificationModel;
 
     status[req.socket.remoteAddress!] = {
-      server: data.server,
       status: data.status,
     };
 
@@ -126,14 +125,13 @@ wss.on("connection", (ws, req) => {
   ws.on("close", async (code, reason) => {
     console.log("Connection to Client closed!");
     if (status[req.socket.remoteAddress!].status !== StatusEnum.Shutdown) {
-      console.log("Server crashed!");
+      console.log("Gmod Server crashed!");
       if (!channel) {
         console.log("Channel Id is Invalid!");
         return;
       }
       var webhook = await getWebhookOfChannel(channel);
       webhook.send({
-        username: "Server",
         content: Config.translations["crashed"],
       });
     }
