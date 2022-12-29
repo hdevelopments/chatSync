@@ -1,6 +1,6 @@
 require("gwsockets")
 util.AddNetworkString("ROOKI.Discord.Message")
-local config = include("autorun/chatSync_config.lua")
+local config = include("autorun/server/chatSync_config.lua")
 chatSync_WS = chatSync_WS or GWSockets.createWebSocket(config.websocket_address, false)
 
 local function SendMessage(ply, txt)
@@ -93,7 +93,7 @@ hook.Add("ShutDown", "ROOKI.chatSync.Shutdown", function()
     chatSync_WS:close()
 end)
 
-timer.Simple(0, function()
+timer.Simple(5, function()
     if not chatSync_WS:isConnected() then
         chatSync_WS:open()
     end
