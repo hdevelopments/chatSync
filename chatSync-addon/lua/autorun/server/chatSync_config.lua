@@ -2,6 +2,7 @@ config = {
     websocket_address = "ws://localhost:6969", -- the IP of the Discordbot Server
     ignoreTeamChat = true, -- Should the Team Chat be ignored
     whitelistPrefix = {"//", "/ooc"}, -- false = everything except ignoreprefix | {"//"} if it is in the "list" it will be going through even if a part is in the ignoreprefix
+    onlyWhiteList = true, -- ONLY  if its in the whitelist
     ignorePrefix = {"/", ".", "!"},
     chatPrefix = {Color(255,0,0), "[OOC - Discord] | {user}:"} -- User gets replaced with username of the dc user
 }

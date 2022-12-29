@@ -23,8 +23,12 @@ local function RecieveMessage(user, msg)
 end
 
 local function IsValidText(txt)
-    for _, v in ipairs(config.whitelistPrefix) do
-        if string.StartWith(txt, v) then return true end
+    if config.whitelistPrefix then
+        for _, v in ipairs(config.whitelistPrefix) do
+            if string.StartWith(txt, v) then return true end
+        end
+
+        if config.onlyWhiteList then return false end
     end
 
     for _, v in ipairs(config.ignorePrefix) do
