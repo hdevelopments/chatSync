@@ -18,12 +18,15 @@ local tries = 0
 
 local function RecieveMessage(user, msg)
     net.Start("ROOKI.Discord.Message")
-    net.WriteString(user)
-    net.WriteString(msg)
+    net.WriteString(util.TableToJSON(msg))
     net.Broadcast()
 end
 
 local function IsValidText(txt)
+    for _, v in ipairs(config.whitelistPrefix) do
+        if string.StartWith(txt, v) then return true end
+    end
+
     for _, v in ipairs(config.ignorePrefix) do
         if string.StartWith(txt, v) then return false end
     end
@@ -39,7 +42,22 @@ end)
 function chatSync_WS:onMessage(msg)
     msg = util.JSONToTable(msg)
     if not msg.chat then return end
-    RecieveMessage(msg.chat.user, msg.chat.message)
+    local text = {}
+
+    if istable(config.chatPrefix) == "table" then
+        for _, v in ipairs(config.chatPrefix) do
+            if isstring(v) then
+                table.insert(text, string.Replace(v, "{user}", msg.chat.user))
+            else
+                table.insert(text, v)
+            end
+        end
+    else
+        table.insert(text, config.chatPrefix)
+    end
+
+    table.insert(text, msg.chat.message)
+    RecieveMessage(text)
 end
 
 function chatSync_WS:onError(errMessage)
@@ -67,6 +85,7 @@ hook.Add("ShutDown", "ROOKI.chatSync.Shutdown", function()
         status = 0,
         notification = "shutdown"
     }))
+
     chatSync_WS:close()
 end)
 
@@ -74,6 +93,7 @@ timer.Simple(0, function()
     if not chatSync_WS:isConnected() then
         chatSync_WS:open()
     end
+
     chatSync_WS:write(util.TableToJSON({
         status = 1,
         notification = "starting"
