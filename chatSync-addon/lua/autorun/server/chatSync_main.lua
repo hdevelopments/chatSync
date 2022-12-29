@@ -4,6 +4,12 @@ local config = include("autorun/server/chatSync_config.lua")
 chatSync_WS = chatSync_WS or GWSockets.createWebSocket(config.websocket_address, false)
 
 local function SendMessage(ply, txt)
+    if config.whitelistPrefix then
+        for _, v in ipairs(config.whitelistPrefix) do
+            txt = string.Replace(txt, v, "")
+        end
+    end
+
     chatSync_WS:write(util.TableToJSON({
         status = 1,
         chat = {
